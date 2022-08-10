@@ -1,4 +1,4 @@
-function Header() {
+const Header = () => {
     return (
         <header className="d-flex justify-between align-center p-40">
             <div className="d-flex align-center ">
@@ -8,7 +8,7 @@ function Header() {
                     <p className="opacity-5">Магазин лучших кроссовок </p>
                 </div>
             </div>
-            <div className="headerInfo">
+            <div >
                 <ul className="d-flex align-center">
                     <li className="d-flex align-center mr-30 ">
                         <img className="mr-10" width={20} height={20} src="/img/likes.svg" alt="car"/>
