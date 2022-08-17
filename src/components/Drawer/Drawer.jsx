@@ -1,42 +1,72 @@
-import classes from "./Drawer.module.scss"
+import styles from "./Drawer.module.scss"
+import Info from "../InfoBlock/Info";
+import SmallButton from "../buttons/SmallButton";
+
 const Drawer = (props) => {
-    let cartSneakersElements = props.cartSneakersData.map((s)=> {
+    let cartElements = props.cartItems.map((item) => {
         return (
-                <div key={s.id} className={classes.cartItem  +"  d-flex align-center"}>
-                    <img className={classes.imgCartItem + "  mr-10"} src={s.imgUrl} alt="Sneakers"/>
-                    <div>
-                        <p>{s.name}</p>
-                        <b>{s.price + " руб."}</b>
-                    </div>
-                    <img className={classes.removeBtn} src="/img/remove.svg" alt="Remove"/>
+            <div key={item.id} className={styles.cartItem + "  d-flex align-center"}>
+                <img className={styles.imgCartItem + "  mr-10"} src={item.imgUrl} alt="Sneakers"/>
+                <div>
+                    <p>{item.name}</p>
+                    <b>{item.price + " руб."}</b>
                 </div>
-            )
+                <SmallButton imageUrl={"/img/remove.svg"} alt={"Remove"}  btnCallback={()=>{props.addCartItem(item)}}/>
+            </div>
+        )
     })
+    let sum = 0;
+    props.cartItems.forEach(i => {
+        sum = +sum + i.price
+    })
+
     return (
-        <div style={{display:'none'}} className={classes.overlay} >
-            <div className={classes.drawer}>
-                <h2 className="d-flex justify-between mb-30">
+        <div className={styles.overlay}>
+            <div className={styles.drawer}>
+                <h2 className="d-flex justify-between mb-30 ">
                     Корзина
-                    <img src="/img/remove.svg" alt="Remove"/>
+                    <SmallButton imageUrl={"/img/remove.svg"}  btnCallback={props.toggleOpenCart}/>
                 </h2>
-                <div className={classes.cartItems +" mt-30"}>
-                    {cartSneakersElements}
-                </div>
-                <div className={classes.cartTotalBlock}>
-                    <ul>
-                        <li className={"d-flex"}>
-                            <p>Итого: </p>
-                            <div></div>
-                            <b>21 498 руб. </b>
-                        </li>
-                        <li className={"d-flex"}>
-                            <p>Налог 5%: </p>
-                            <div></div>
-                            <b>1074 руб. </b>
-                        </li>
-                    </ul>
-                    <button className={classes.greenButton}>Оформить заказ <img src="/img/perl.svg" alt="Perl"/></button>
-                </div>
+                {props.orderReady > 0
+                    ? (<Info title={'Заказ оформлен!'}
+                             message={`Ваш заказ #${props.orderReady} скоро будет передан курьерской доставке`}
+                             images={'/img/order_ready.jpg'}
+                             toggleOpenCart={props.toggleOpenCart}/>)
+                    : (cartElements.length > 0
+                        ? (<div className={styles.cartBlock}>
+                            <div className={styles.cartItems + " mt-30"}>
+                                {cartElements}
+                            </div>
+                            <div className={styles.cartTotalBlock}>
+                                <ul>
+                                    <li className={"d-flex"}>
+                                        <p>Стоимость: </p>
+                                        <div></div>
+                                        <b>{sum + " руб."}</b>
+                                    </li>
+                                    <li className={"d-flex"}>
+                                        <p>Налог 5%: </p>
+                                        <div></div>
+                                        <b>{ Math.ceil(sum *0.05) + " руб."}</b>
+                                    </li>
+                                    <li className={"d-flex"}>
+                                        <p>Итого: </p>
+                                        <div></div>
+                                        <b>{ sum +Math.ceil(sum *0.05) + " руб."}</b>
+                                    </li>
+                                </ul>
+                                <button onClick={()=>{props.confirmTheOrder(sum + Math.ceil(sum *0.05))}} className={styles.greenButton}>
+                                    Оформить заказ
+                                    <img src="/img/perl.svg" alt="Perl"/>
+                                </button>
+                            </div>
+                        </div>)
+                        : <Info title={'Корзина пустая'}
+                                message={'Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.'}
+                                images={'/img/empty_cart.jpg'}
+                                toggleOpenCart={props.toggleOpenCart}/>
+                    )
+                }
             </div>
         </div>
     );
