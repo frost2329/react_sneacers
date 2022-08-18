@@ -30,7 +30,7 @@ const Drawer = (props) => {
                 {props.orderReady > 0
                     ? (<Info title={'Заказ оформлен!'}
                              message={`Ваш заказ #${props.orderReady} скоро будет передан курьерской доставке`}
-                             image={'img/order_ready.jpg'}
+                             image={'img/empty_cart.jpg'}
                              callbackBtn={props.toggleOpenCart}/>)
                     : (cartElements.length > 0
                         ? (<div className={styles.cartBlock}>
