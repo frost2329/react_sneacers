@@ -30,7 +30,7 @@ const Card = (props) => {
                 </div>
                 : (<div>
                     <div className={styles.favorite}>
-                        <SmallButton imageUrl={props.item.favorite ? "/img/liked.svg" : "/img/unliked.svg"}
+                        <SmallButton imageUrl={props.item.favorite ? "img/liked.svg" : "img/unliked.svg"}
                                      alt="Like"
                                      classes={"pos"}
                                      btnCallback={() => {
@@ -44,7 +44,7 @@ const Card = (props) => {
                             <p>Цена:</p>
                             <span>{props.item.price} руб.</span>
                         </div>
-                        <SmallButton imageUrl={!props.item.selected ? "/img/plus.svg" : "/img/selected.svg"}
+                        <SmallButton imageUrl={!props.item.selected ? "img/plus.svg" : "img/selected.svg"}
                                      alt={"Plus"}
                                      btnCallback={() => {
                                          props.addCartItem(props.item)

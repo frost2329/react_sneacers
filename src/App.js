@@ -3,10 +3,10 @@ import axios from "axios";
 import styles from "./App.module.scss"
 import Header from "./components/Header/Header";
 import Drawer from "./components/Drawer/Drawer";
-import Home from "./pages/Home/Home";
-import Orders from "./pages/Orders/Orders";
+import Home from "./pages/Home";
+import Orders from "./pages/Orders";
 import {useEffect, useState} from "react";
-import Favorite from "./pages/Favorite/Favorite";
+import Favorite from "./pages/Favorite";
 import {Route, Routes} from "react-router-dom";
 import {sneakersAPI} from "./sneakersAPI";
 
@@ -160,14 +160,14 @@ const App = () => {
 
             <Header addCardItems={addCardItems} toggleOpenCart={toggleOpenCart}/>
             <Routes>
-                <Route path='/' element={<Home addCartItem={addCartItem}
+                <Route path='' element={<Home addCartItem={addCartItem}
                                                addFavoriteItem={addFavoriteItem}
                                                items={cardItems}
                                                isLoading={isLoading}/>}/>
-                <Route path='/favorite' element={<Favorite addCartItem={addCartItem}
+                <Route path='favorite' element={<Favorite addCartItem={addCartItem}
                                                            addFavoriteItem={addFavoriteItem}
                                                            favoriteItems={favoriteCardItems}/>}/>
-                <Route path='/orders' element={<Orders addCartItem={addCartItem}
+                <Route path='orders' element={<Orders addCartItem={addCartItem}
                                                        addFavoriteItem={addFavoriteItem}
                                                        orderCardItems={orderCardItems}/>}/>
             </Routes>

@@ -11,7 +11,7 @@ const Drawer = (props) => {
                     <p>{item.name}</p>
                     <b>{item.price + " руб."}</b>
                 </div>
-                <SmallButton imageUrl={"/img/remove.svg"} alt={"Remove"}  btnCallback={()=>{props.addCartItem(item)}}/>
+                <SmallButton imageUrl={"img/remove.svg"} alt={"Remove"}  btnCallback={()=>{props.addCartItem(item)}}/>
             </div>
         )
     })
@@ -25,12 +25,12 @@ const Drawer = (props) => {
             <div className={styles.drawer}>
                 <h2 className="d-flex justify-between mb-30 ">
                     Корзина
-                    <SmallButton imageUrl={"/img/remove.svg"}  btnCallback={props.toggleOpenCart}/>
+                    <SmallButton imageUrl={"img/remove.svg"}  btnCallback={props.toggleOpenCart}/>
                 </h2>
                 {props.orderReady > 0
                     ? (<Info title={'Заказ оформлен!'}
                              message={`Ваш заказ #${props.orderReady} скоро будет передан курьерской доставке`}
-                             image={'/img/order_ready.jpg'}
+                             image={'img/order_ready.jpg'}
                              callbackBtn={props.toggleOpenCart}/>)
                     : (cartElements.length > 0
                         ? (<div className={styles.cartBlock}>
@@ -57,13 +57,13 @@ const Drawer = (props) => {
                                 </ul>
                                 <button onClick={()=>{props.confirmTheOrder(sum + Math.ceil(sum *0.05))}} className={styles.greenButton}>
                                     Оформить заказ
-                                    <img src="/img/perl.svg" alt="Perl"/>
+                                    <img src="img/perl.svg" alt="Perl"/>
                                 </button>
                             </div>
                         </div>)
                         : <Info title={'Корзина пустая'}
                                 message={'Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.'}
-                                image={'/img/empty_cart.jpg'}
+                                image={'img/empty_cart.jpg'}
                                 callbackBtn={props.toggleOpenCart}/>
                     )
                 }
