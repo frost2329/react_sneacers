@@ -8,12 +8,14 @@ import Orders from "./pages/Orders/Orders";
 import {useEffect, useState} from "react";
 import Favorite from "./pages/Favorite/Favorite";
 import {Route, Routes} from "react-router-dom";
+import {sneakersAPI} from "./sneakersAPI";
 
 
 const App = () => {
+
+    const [isLoading, setIsLoading] = useState(true)
     const [openCart, setOpenCart] = useState(false)
     const [orderReady, setOrderReady] = useState(0)
-
     const [itemsArray, setItemsArray] = useState([])
     const [cartArray, setCartArray] = useState([])
     const [favoriteArray, setFavoriteArray] = useState([])
@@ -56,22 +58,20 @@ const App = () => {
         if (cartArray.find(i => i.itemId === item.itemId)) {
             let cartItemObj = cartArray.find((i) => i.itemId === item.itemId)
             try {
-                const response = await axios.delete(`https://62f53aa6ac59075124ce14b4.mockapi.io/cart/${cartItemObj.id}`)
+                const response = await sneakersAPI.deleteCart(cartItemObj.id)
                 if (response.status === 200) {
                     setCartArray(cartArray.filter(i => i.id !== response.data.id))
                 }
             } catch (error) {
-                console.log(error)
+                alert('Ошибка во время удаления из карзины =(')
             }
         } else {
             let itemObj = itemsArray.find((i) => i.itemId === item.itemId)
             try {
-                const response = await axios.post(`https://62f53aa6ac59075124ce14b4.mockapi.io/cart`, {itemId: itemObj.itemId})
-                if (response.status === 201) {
-                    setCartArray([...cartArray, response.data])
-                }
+                const response = await sneakersAPI.postCart({itemId: itemObj.itemId})
+                if (response.status === 201) {setCartArray([...cartArray, response.data])}
             } catch (error) {
-                console.log(error)
+                alert('Ошибка во время добавления объекта в корзину =(')
             }
         }
     }
@@ -79,51 +79,44 @@ const App = () => {
         if (favoriteArray.find(i => i.itemId === item.itemId)) {
             let favoriteItemObj = favoriteArray.find((i) => i.itemId === item.itemId)
             try {
-                const response = await axios.delete(`https://62f53aa6ac59075124ce14b4.mockapi.io/favorite/${favoriteItemObj.id}`)
+                const response = await sneakersAPI.deleteFavorite(favoriteItemObj.id)
                 if (response.status === 200) {
                     setFavoriteArray(favoriteArray.filter(i => i.id !== response.data.id))
                 }
             } catch (error) {
-                console.log(error)
+                alert('Ошибка во время удаления из избранного =(')
             }
         } else {
             let itemObj = itemsArray.find((i) => i.itemId === item.itemId)
             try {
-                const response = await axios.post(`https://62f53aa6ac59075124ce14b4.mockapi.io/favorite`, {itemId: itemObj.itemId})
+                const response = await  sneakersAPI.postFavorite({itemId: itemObj.itemId})
                 if (response.status === 201) {
                     setFavoriteArray([...favoriteArray, response.data])
                 }
             } catch (error) {
-                console.log(error)
+                alert('Ошибка во время добавления объекта в избранное =(')
             }
         }
     }
     const confirmTheOrder = async (orderSum) => {
-        const respPost = await axios.post(`https://62f53aa6ac59075124ce14b4.mockapi.io/orders/`, {
-            orderSum,
-            orderItems: cartArray
-        })
+        const respPost = await sneakersAPI.postOrders({orderSum, orderItems: cartArray})
         if (respPost.status === 201) {
             setOrdersArray([...ordersArray, respPost.data]);
         }
         let iter = 0
         let handleCartItems = async () => {
             try {
-                const respDel = await axios.delete(`https://62f53aa6ac59075124ce14b4.mockapi.io/cart/${cartArray[iter].id}`)
+                const respDel = await sneakersAPI.deleteCart(cartArray[iter].id)
                 if (respDel.status === 200) {
-                    axios.get(`https://62f53aa6ac59075124ce14b4.mockapi.io/cart`).then((getResp) => {
-                        console.log('попытка');
-                        console.log(getResp.data);
-                        if ((getResp.status = 200) && (getResp.data.length === 0)) {
-                            console.log('попал');
+                    let getResp = await sneakersAPI.getCart()
+                    if ((getResp.status = 200) && (getResp.data.length === 0)) {
                             console.log(getResp.data);
                             setCartArray([])
                             setOrderReady(respPost.data.id)
                         }
-                    })
                 }
             } catch (error) {
-                console.log(error)
+                alert('Ошибка во время оформления заказа =(')
             }
 
 
@@ -136,36 +129,41 @@ const App = () => {
     }
 
     useEffect(() => {
-        axios.get('https://62f53aa6ac59075124ce14b4.mockapi.io/items')
-            .then((response) => {
-                setItemsArray(response.data)
-            })
-        axios.get('https://62f53aa6ac59075124ce14b4.mockapi.io/cart')
-            .then((response) => {
-                setCartArray(response.data)
-            })
-        axios.get('https://62f53aa6ac59075124ce14b4.mockapi.io/favorite')
-            .then((response) => {
-                setFavoriteArray(response.data)
-            })
-        axios.get('https://62f53aa6ac59075124ce14b4.mockapi.io/orders')
-            .then((response) => {
-                setOrdersArray(response.data)
-            })
+        const fetchData = async () => {
+            try {
+                setIsLoading(true)
+                let itemsResponse = await sneakersAPI.getItems()
+                let cartResponse = await sneakersAPI.getCart()
+                let favoriteResponse = await sneakersAPI.getFavorite()
+                let ordersResponse = await sneakersAPI.getOrders()
+
+                setItemsArray(itemsResponse.data)
+                setCartArray(cartResponse.data)
+                setFavoriteArray(favoriteResponse.data)
+                setOrdersArray(ordersResponse.data)
+
+                setIsLoading(false)
+            }catch (error) {
+                alert("Ошибка во время загрузки данных")
+            }
+        }
+        fetchData()
     }, [])
     return (
         <div className={styles.wrapper + " clear"}>
-            {openCart && <Drawer toggleOpenCart={toggleOpenCart}
+            <Drawer toggleOpenCart={toggleOpenCart}
                                  cartItems={addCardItems}
                                  addCartItem={addCartItem}
                                  orderReady={orderReady}
-                                 confirmTheOrder={confirmTheOrder}/>
-            }
+                                 confirmTheOrder={confirmTheOrder}
+                                 openCart={openCart}/>
+
             <Header addCardItems={addCardItems} toggleOpenCart={toggleOpenCart}/>
             <Routes>
                 <Route path='/' element={<Home addCartItem={addCartItem}
                                                addFavoriteItem={addFavoriteItem}
-                                               items={cardItems}/>}/>
+                                               items={cardItems}
+                                               isLoading={isLoading}/>}/>
                 <Route path='/favorite' element={<Favorite addCartItem={addCartItem}
                                                            addFavoriteItem={addFavoriteItem}
                                                            favoriteItems={favoriteCardItems}/>}/>

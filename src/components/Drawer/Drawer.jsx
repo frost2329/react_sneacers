@@ -21,7 +21,7 @@ const Drawer = (props) => {
     })
 
     return (
-        <div className={styles.overlay}>
+        <div className={`${styles.overlay} ${props.openCart && styles.overlayVisible}`}>
             <div className={styles.drawer}>
                 <h2 className="d-flex justify-between mb-30 ">
                     Корзина
@@ -30,8 +30,8 @@ const Drawer = (props) => {
                 {props.orderReady > 0
                     ? (<Info title={'Заказ оформлен!'}
                              message={`Ваш заказ #${props.orderReady} скоро будет передан курьерской доставке`}
-                             images={'/img/order_ready.jpg'}
-                             toggleOpenCart={props.toggleOpenCart}/>)
+                             image={'/img/order_ready.jpg'}
+                             callbackBtn={props.toggleOpenCart}/>)
                     : (cartElements.length > 0
                         ? (<div className={styles.cartBlock}>
                             <div className={styles.cartItems + " mt-30"}>
@@ -63,8 +63,8 @@ const Drawer = (props) => {
                         </div>)
                         : <Info title={'Корзина пустая'}
                                 message={'Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.'}
-                                images={'/img/empty_cart.jpg'}
-                                toggleOpenCart={props.toggleOpenCart}/>
+                                image={'/img/empty_cart.jpg'}
+                                callbackBtn={props.toggleOpenCart}/>
                     )
                 }
             </div>

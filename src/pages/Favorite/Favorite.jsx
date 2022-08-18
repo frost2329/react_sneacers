@@ -2,6 +2,7 @@ import Card from "../../components/Card/Card";
 import styles from "../Home/Home.module.scss"
 import {NavLink} from "react-router-dom";
 import SmallButton from "../../components/buttons/SmallButton";
+import Info from "../../components/InfoBlock/Info";
 
 const Favorite = (props) => {
     let itemsFavorite = props.favoriteItems.map((item)=> {
@@ -19,9 +20,17 @@ const Favorite = (props) => {
                 </NavLink>
                 <h1>{'Мои закладки'}</h1>
             </div>
-            <div className="d-flex flex-wrap">
-                {itemsFavorite }
-            </div>
+            {itemsFavorite.length > 0
+                ?<div className="d-flex flex-wrap">
+                    {itemsFavorite }
+                </div>
+                : <div className={"mt-50"}>
+                    <Info title={'Закладок нет :('}
+                          message={'Вы ничего не добавляли в закладки'}
+                          image={'/img/smile_sad_1.png'}
+                          link={"/"}/>
+                </div>
+            }
         </div>
     );
 }
