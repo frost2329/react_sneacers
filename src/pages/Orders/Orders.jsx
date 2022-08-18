@@ -6,7 +6,7 @@ import Info from "../../components/InfoBlock/Info";
 
 const Orders = (props) => {
     let orderItemsEl = props.orderCardItems.slice().reverse().map((order) => {
-        return <div key={order.id} >
+        return <div key={order.id} className={"mb-30"} >
             <h3 className={"mb-20 opacity-8"}>Заказ #{order.id}</h3>
             <div className={"d-flex flex-wrap"}>
                 {order.orderItems.map((orItem) => {
